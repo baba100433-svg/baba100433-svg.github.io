@@ -50,6 +50,11 @@ exports.handler = async function (event) {
 
   // 환경변수가 없으면 서버 설정 오류 (키 값 자체는 노출하지 않음)
   if (!supabaseUrl || !serviceKey) {
+    // 진단용: 키 "값"은 절대 찍지 않고, 설정 여부(true/false)만 남긴다.
+    console.log("env check", {
+      hasSupabaseUrl: Boolean(supabaseUrl),
+      hasServiceKey: Boolean(serviceKey),
+    });
     return jsonResponse(500, {
       error: "서버 설정이 완료되지 않았어요. 관리자에게 문의해주세요.",
     });
@@ -68,7 +73,12 @@ exports.handler = async function (event) {
       const url = `${restBase}?select=id,nickname,message,created_at&order=created_at.desc&limit=20`;
       const res = await fetch(url, { headers: commonHeaders });
       if (!res.ok) {
-        return jsonResponse(502, { error: "글을 불러오지 못했어요." });
+        // [임시 진단] Supabase가 돌려준 상태코드/본문을 확인한다. 키 값은 포함되지 않는다.
+        const diagBody = await res.text();
+        return jsonResponse(502, {
+          error: "글을 불러오지 못했어요.",
+          _diag: { supabaseStatus: res.status, supabaseBody: diagBody.slice(0, 300) },
+        });
       }
       const rows = await res.json();
       return jsonResponse(200, { items: rows });
