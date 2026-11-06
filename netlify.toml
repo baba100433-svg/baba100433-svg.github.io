@@ -1,0 +1,22 @@
+# Netlify 배포 설정
+# 현재 프로젝트는 빌드가 없는 순수 정적 사이트이므로 빌드 명령이 없다.
+# publish = 루트(현재 index.html 위치). GitHub Pages 구조를 그대로 유지한다.
+
+[build]
+  # 빌드 산출물을 공개할 디렉터리 (루트). 기존 index.html 위치를 유지.
+  publish = "."
+  # 서버 함수 소스 폴더. 이 폴더는 공개 publish 대상이 아니라 Netlify가 별도로 실행한다.
+  functions = "netlify/functions"
+  # 정적 사이트라 빌드 명령 없음.
+  command = ""
+
+[functions]
+  # Node 런타임으로 함수 실행
+  node_bundler = "esbuild"
+
+# 공개 출력에서 제외할 경로 (개인 기록·비밀·서버 소스가 정적으로 노출되지 않게 함)
+# Netlify는 .git, node_modules 등을 기본 제외하지만, 안전을 위해 아래도 명시한다.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"

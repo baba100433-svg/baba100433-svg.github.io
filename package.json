@@ -1,0 +1,9 @@
+{
+  "name": "baba100433-guestbook",
+  "version": "1.0.0",
+  "private": true,
+  "description": "김은지 홈페이지 - 짧은 방명록 (Netlify Functions + Supabase)",
+  "engines": {
+    "node": ">=18"
+  }
+}

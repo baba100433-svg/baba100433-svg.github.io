@@ -87,7 +87,44 @@
     .card a { color: var(--main); }
     .tags span { color: #12141c; }
     nav { box-shadow: none; border-bottom: 1px solid #2a2e42; }
-    footer { color: #8a90a6; }</style>
+    footer { color: #8a90a6; }
+
+    /* 방명록 */
+    .gb-form { display: flex; flex-direction: column; gap: 10px; }
+    .gb-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .gb-row input { flex: 1; min-width: 140px; }
+    .gb-form input {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #2a2e42;
+      background: #12141c;
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .gb-form input:focus { outline: 2px solid var(--main); }
+    .gb-form button {
+      align-self: flex-start;
+      padding: 10px 22px;
+      border: none;
+      border-radius: 8px;
+      background: var(--main);
+      color: #12141c;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .gb-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .gb-status { min-height: 1.3em; font-size: 0.92rem; }
+    .gb-status.error { color: #ff8a8a; }
+    .gb-status.ok { color: #7ee0a0; }
+    .gb-status.loading { color: #b8bdd0; }
+    .gb-list { list-style: none; margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+    .gb-item { background: var(--card); border-radius: 12px; padding: 14px 16px; }
+    .gb-item .gb-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+    .gb-item .gb-nick { font-weight: 700; color: var(--main); }
+    .gb-item .gb-time { font-size: 0.82rem; color: #8a90a6; }
+    .gb-item .gb-msg { color: #d6d9e6; word-break: break-word; }
+    .gb-empty { color: #8a90a6; }</style>
 </head>
 
 <body>
@@ -97,6 +134,7 @@
     <a href="#projects">내가 한 일</a>
     <a href="#skills">할 줄 아는 것</a>
     <a href="#contact">연락처</a>
+    <a href="#guestbook">방명록</a>
   </nav>
 
   <section class="hero">
@@ -148,9 +186,154 @@
     </div>
   </section>
 
+  <section id="guestbook">
+    <h2>방명록</h2>
+    <div class="card">
+      <p style="margin-bottom:16px;">포트폴리오를 보고 한 줄 응원 메시지를 남겨주세요. (별명 2~12자, 메시지 1~100자)</p>
+      <form class="gb-form" id="gbForm" autocomplete="off">
+        <div class="gb-row">
+          <input type="text" id="gbNick" placeholder="별명 (2~12자)" maxlength="12" aria-label="별명">
+          <input type="text" id="gbMsg" placeholder="한 줄 메시지 (1~100자)" maxlength="100" aria-label="메시지">
+        </div>
+        <button type="submit" id="gbSubmit">등록</button>
+        <p class="gb-status" id="gbStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+    <ul class="gb-list" id="gbList" aria-label="최근 방명록 목록"></ul>
+  </section>
+
   <footer>
     © 2026 은지. All rights reserved.
   </footer>
+
+  <script>
+    (function () {
+      const API = "/.netlify/functions/guestbook";
+      const NICK_MIN = 2, NICK_MAX = 12, MSG_MIN = 1, MSG_MAX = 100;
+
+      const form = document.getElementById("gbForm");
+      const nickEl = document.getElementById("gbNick");
+      const msgEl = document.getElementById("gbMsg");
+      const submitEl = document.getElementById("gbSubmit");
+      const statusEl = document.getElementById("gbStatus");
+      const listEl = document.getElementById("gbList");
+
+      function setStatus(text, kind) {
+        statusEl.textContent = text;
+        statusEl.className = "gb-status" + (kind ? " " + kind : "");
+      }
+
+      // 저장 시각을 "YYYY-MM-DD HH:MM" 형태로 표시
+      function formatTime(iso) {
+        const d = new Date(iso);
+        if (isNaN(d)) return "";
+        const p = (n) => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+      }
+
+      // 글 하나를 목록 항목으로 만든다.
+      // textContent 로만 넣으므로 <b> 같은 입력도 글자 그대로 표시된다 (XSS 방지).
+      function makeItem(row) {
+        const li = document.createElement("li");
+        li.className = "gb-item";
+
+        const head = document.createElement("div");
+        head.className = "gb-head";
+        const nick = document.createElement("span");
+        nick.className = "gb-nick";
+        nick.textContent = row.nickname;
+        const time = document.createElement("span");
+        time.className = "gb-time";
+        time.textContent = formatTime(row.created_at);
+        head.appendChild(nick);
+        head.appendChild(time);
+
+        const msg = document.createElement("div");
+        msg.className = "gb-msg";
+        msg.textContent = row.message;
+
+        li.appendChild(head);
+        li.appendChild(msg);
+        return li;
+      }
+
+      function renderList(items) {
+        listEl.innerHTML = "";
+        if (!items || items.length === 0) {
+          const li = document.createElement("li");
+          li.className = "gb-empty";
+          li.textContent = "아직 글이 없어요. 첫 메시지를 남겨보세요.";
+          listEl.appendChild(li);
+          return;
+        }
+        items.forEach((row) => listEl.appendChild(makeItem(row)));
+      }
+
+      async function loadList() {
+        setStatus("불러오는 중…", "loading");
+        try {
+          const res = await fetch(API, { method: "GET" });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "불러오기 실패");
+          renderList(data.items);
+          setStatus("", "");
+        } catch (e) {
+          setStatus("글을 불러오지 못했어요. 새로고침 해주세요.", "error");
+        }
+      }
+
+      // 브라우저 쪽 1차 검증
+      function clientValidate(nick, msg) {
+        if (nick.length < NICK_MIN || nick.length > NICK_MAX) {
+          return `별명은 ${NICK_MIN}~${NICK_MAX}자로 입력해주세요.`;
+        }
+        if (msg.length < MSG_MIN || msg.length > MSG_MAX) {
+          return `메시지는 ${MSG_MIN}~${MSG_MAX}자로 입력해주세요.`;
+        }
+        return null;
+      }
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const nick = nickEl.value.trim();
+        const msg = msgEl.value.trim();
+
+        const err = clientValidate(nick, msg);
+        if (err) { setStatus(err, "error"); return; }
+
+        submitEl.disabled = true;
+        setStatus("저장 중…", "loading");
+        try {
+          const res = await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nickname: nick, message: msg }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "저장 실패");
+
+          // 서버가 저장을 확인한 뒤에만 성공 처리
+          setStatus("등록됐어요.", "ok");
+          nickEl.value = "";
+          msgEl.value = "";
+          if (data.item) {
+            // 빈 목록 안내가 있으면 지우고 맨 위에 추가
+            const empty = listEl.querySelector(".gb-empty");
+            if (empty) listEl.innerHTML = "";
+            listEl.insertBefore(makeItem(data.item), listEl.firstChild);
+          } else {
+            loadList();
+          }
+        } catch (e) {
+          setStatus("저장에 실패했어요. 다시 시도해주세요.", "error");
+        } finally {
+          submitEl.disabled = false;
+        }
+      });
+
+      loadList();
+    })();
+  </script>
 
 </body>
 </html>
