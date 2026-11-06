@@ -50,17 +50,18 @@ exports.handler = async function (event) {
 
   // 환경변수가 없으면 서버 설정 오류 (키 값 자체는 노출하지 않음)
   if (!supabaseUrl || !serviceKey) {
-    // 진단용: 키 "값"은 절대 찍지 않고, 설정 여부(true/false)만 남긴다.
-    console.log("env check", {
-      hasSupabaseUrl: Boolean(supabaseUrl),
-      hasServiceKey: Boolean(serviceKey),
-    });
     return jsonResponse(500, {
       error: "서버 설정이 완료되지 않았어요. 관리자에게 문의해주세요.",
     });
   }
 
-  const restBase = `${supabaseUrl.replace(/\/$/, "")}/rest/v1/${TABLE}`;
+  // SUPABASE_URL 값이 프로젝트 주소(https://xxx.supabase.co)든,
+  // 끝에 /rest/v1 이 붙은 형태든 모두 올바르게 처리한다.
+  // 끝의 슬래시와 /rest/v1 을 떼어내어 "프로젝트 기준 주소(origin)"로 정규화한다.
+  const origin = supabaseUrl
+    .replace(/\/+$/, "")        // 끝 슬래시 제거
+    .replace(/\/rest\/v1$/, ""); // 끝에 붙은 /rest/v1 제거
+  const restBase = `${origin}/rest/v1/${TABLE}`;
   const commonHeaders = {
     apikey: serviceKey,
     Authorization: `Bearer ${serviceKey}`,
@@ -73,12 +74,7 @@ exports.handler = async function (event) {
       const url = `${restBase}?select=id,nickname,message,created_at&order=created_at.desc&limit=20`;
       const res = await fetch(url, { headers: commonHeaders });
       if (!res.ok) {
-        // [임시 진단] Supabase가 돌려준 상태코드/본문을 확인한다. 키 값은 포함되지 않는다.
-        const diagBody = await res.text();
-        return jsonResponse(502, {
-          error: "글을 불러오지 못했어요.",
-          _diag: { supabaseStatus: res.status, supabaseBody: diagBody.slice(0, 300) },
-        });
+        return jsonResponse(502, { error: "글을 불러오지 못했어요." });
       }
       const rows = await res.json();
       return jsonResponse(200, { items: rows });
