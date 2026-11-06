@@ -150,3 +150,11 @@ Supabase(Postgres) 테이블 guestbook
 - 서버 함수 코드는 정적 공개 폴더에 복사하지 않는다 (Netlify가 함수 폴더에서 별도로 실행).
 
 > 기존 GitHub Pages 설정은 지우지 않는다. Netlify 배포와 병행 가능하다.
+
+---
+
+## 11. 배포 기록 (2026-11-06)
+
+- 배포 서비스: Netlify
+- Netlify 프로젝트 이름: `fluffy-macaron-40fbc1`
+- 배포 주소: `https://fluffy-macaron-40fbc1.netlify.app/`
