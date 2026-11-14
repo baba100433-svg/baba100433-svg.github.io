@@ -3,193 +3,674 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>김은지의 홈페이지</title>
+  <title>김은지 | 경영 · IT · 디자인 포트폴리오</title>
+
+  <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 
   <style>
     :root {
-      --main: #4f6df5;
-      --bg: #f7f8fc;
-      --text: #222222;
-      --card: #ffffff;
+      --violet: #7c3aed;
+      --violet-soft: #a78bfa;
+      --violet-deep: #4c1d95;
+      --yellow: #facc15;
+      --yellow-soft: #fde68a;
+      --bg: #0e0b1a;
+      --bg-alt: #16122a;
+      --card: #1c1733;
+      --card-hi: #241d40;
+      --text: #f3f0ff;
+      --muted: #b4acd6;
+      --line: #2e2650;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
+    html { scroll-behavior: smooth; }
+
+    /* ===== Scroll reveal (아래에서 흐릿하게 올라오는 효과) ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(-28px);
+      filter: blur(6px);
+      transition: opacity 0.7s ease, transform 0.7s ease, filter 0.7s ease;
+      will-change: opacity, transform, filter;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+    /* 같은 묶음 안에서 순차적으로 떠오르도록 약간의 지연 */
+    .reveal.d1 { transition-delay: 0.08s; }
+    .reveal.d2 { transition-delay: 0.16s; }
+    .reveal.d3 { transition-delay: 0.24s; }
+    /* 움직임을 줄이도록 설정한 사용자는 애니메이션 없이 바로 표시 */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; filter: none; transition: none; }
     }
 
+    body {
+      font-family: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(1100px 620px at 12% -8%, rgba(124, 58, 237, 0.30), transparent 60%),
+        radial-gradient(900px 540px at 108% 8%, rgba(250, 204, 21, 0.12), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    /* ===== Scroll progress bar (상단 진행 바) ===== */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--violet), var(--yellow));
+      z-index: 60;
+      transition: width 0.08s linear;
+    }
+
+    /* ===== Navigation ===== */
     nav {
-      background: var(--card);
-      padding: 14px 20px;
-      display: flex;
-      justify-content: center;
-      gap: 24px;
       position: sticky;
       top: 0;
-      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 14px 18px;
+      background: rgba(14, 11, 26, 0.72);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
     }
-    nav a { color: var(--text); text-decoration: none; font-weight: 600; }
-    nav a:hover { color: var(--main); }
+    nav .brand {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-right: auto;
+      padding-left: 6px;
+      background: linear-gradient(90deg, var(--violet-soft), var(--yellow));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    nav a.link {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 7px 13px;
+      border-radius: 999px;
+      transition: color 0.18s, background 0.18s;
+    }
+    nav a.link:hover { color: var(--text); background: var(--card-hi); }
+    nav a.link.active { color: var(--yellow); background: rgba(250,204,21,0.12); }
 
+    /* ===== Layout helpers ===== */
     section {
-      max-width: 800px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 60px 20px;
+      padding: 84px 22px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 14px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 26px;
+      height: 2px;
+      background: var(--yellow);
+      display: inline-block;
     }
 
     h2 {
-      font-size: 1.6rem;
-      margin-bottom: 24px;
-      color: var(--main);
+      font-size: 2rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
     }
+    h2 .accent {
+      background: linear-gradient(90deg, var(--violet-soft), var(--yellow));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .section-sub { color: var(--muted); margin-bottom: 34px; max-width: 640px; }
 
-    .hero { text-align: center; padding-top: 80px; }
-    .hero h1 { font-size: 2.2rem; margin-bottom: 12px; }
-    .hero p { font-size: 1.1rem; color: #555; }
+    /* ===== Hero ===== */
+    .hero {
+      max-width: 1040px;
+      padding-top: 110px;
+      padding-bottom: 90px;
+      text-align: left;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--violet-soft);
+      background: rgba(124, 58, 237, 0.14);
+      border: 1px solid var(--line);
+      padding: 7px 15px;
+      border-radius: 999px;
+      margin-bottom: 26px;
+    }
+    .badge .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--yellow);
+      box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.18);
+    }
+    .hero .greeting {
+      display: block;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--violet-soft);
+      margin-bottom: 14px;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .hero h1 .g1 {
+      background: linear-gradient(90deg, #c4b5fd, var(--violet));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero h1 .g2 {
+      background: linear-gradient(90deg, var(--yellow), #f59e0b);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero p.lead { font-size: 1.15rem; color: var(--muted); max-width: 600px; margin-bottom: 30px; }
+    .hero .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 0.98rem;
+      padding: 12px 24px; border-radius: 12px;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, var(--violet), var(--violet-deep));
+      color: #fff;
+      box-shadow: 0 8px 26px rgba(124, 58, 237, 0.4);
+    }
+    .btn-ghost { background: transparent; color: var(--yellow); border: 1px solid var(--yellow); }
+    .btn:hover { transform: translateY(-2px); }
 
+    /* ===== About ===== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
     .card {
       background: var(--card);
-      border-radius: 14px;
-      padding: 22px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 26px;
     }
-    .card h3 { margin-bottom: 6px; }
-    .card p { color: #555; }
+    .card.lead-card p + p { margin-top: 14px; }
+    .card.lead-card p { color: var(--muted); }
+    .card.lead-card strong { color: var(--text); }
 
-    .tags { display: flex; flex-wrap: wrap; gap: 10px; }
-    .tags span {
-      background: var(--main);
-      color: white;
-      padding: 6px 16px;
-      border-radius: 999px;
-      font-size: 0.95rem;
+    .profile dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; }
+    .profile dt { color: var(--yellow); font-weight: 700; font-size: 0.86rem; white-space: nowrap; }
+    .profile dd { color: var(--text); font-size: 0.95rem; }
+    .profile .p-title { font-weight: 800; margin-bottom: 16px; font-size: 1.1rem; }
+    .profile .p-title span { color: var(--violet-soft); }
+
+    /* ===== Projects ===== */
+    .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .proj {
+      background: linear-gradient(160deg, var(--card-hi), var(--card));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 26px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.18s, border-color 0.18s;
+    }
+    .proj::before {
+      content: "";
+      position: absolute; inset: 0 0 auto 0; height: 4px;
+      background: linear-gradient(90deg, var(--violet), var(--yellow));
+    }
+    .proj:hover { transform: translateY(-4px); border-color: var(--violet-soft); }
+    .proj .role {
+      display: inline-block;
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--violet-deep); background: var(--yellow-soft);
+      padding: 4px 10px; border-radius: 6px; margin-bottom: 14px;
+    }
+    .proj .period { font-size: 0.82rem; color: var(--yellow); font-weight: 600; margin-bottom: 6px; }
+    .proj h3 { font-size: 1.18rem; margin-bottom: 10px; letter-spacing: -0.01em; }
+    .proj p { color: var(--muted); font-size: 0.96rem; }
+    .proj p strong { color: var(--text); }
+    /* 위를 향하는 화살표 ("이상"을 기호로) */
+    .arrow {
+      display: inline-block;
+      font-weight: 800;
+      color: var(--yellow);
+      transform: translateY(-1px);
+      margin-left: 1px;
+    }
+    /* 프로젝트 메타 칩 (툴 · 성과) */
+    .proj-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .meta-chip {
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--violet-soft);
+      background: rgba(124, 58, 237, 0.14);
+      border: 1px solid var(--line);
+      padding: 4px 11px; border-radius: 8px;
+    }
+    .meta-chip.meta-live {
+      color: var(--bg); background: var(--yellow); border-color: var(--yellow);
     }
 
-    footer {
-      text-align: center;
-      padding: 30px 20px;
-      color: #888;
-      font-size: 0.9rem;
+    /* ===== Skills / Certifications ===== */
+    .skills-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .chip-card h3 { font-size: 1.05rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .chip-card h3 .ico { font-size: 1.2rem; }
+    .chip-card h3 .count {
+      margin-left: auto; font-size: 0.78rem; font-weight: 800;
+      color: #3a2e00; background: var(--yellow);
+      min-width: 22px; text-align: center; padding: 1px 8px; border-radius: 999px;
     }
-      /* 어두운 배경 */
-    :root {
-      --main: #8aa4ff;
-      --bg: #12141c;
-      --text: #f1f3f9;
-      --card: #1d2030;
+    .chip-card h3 .count-wip {
+      color: var(--muted); background: transparent; border: 1px solid var(--line);
     }
-    .card p, .hero p { color: #b8bdd0; }
-    .card a { color: var(--main); }
-    .tags span { color: #12141c; }
-    nav { box-shadow: none; border-bottom: 1px solid #2a2e42; }
-    footer { color: #8a90a6; }
 
-    /* 방명록 */
-    .gb-form { display: flex; flex-direction: column; gap: 10px; }
+    /* 완료 카드는 강조(노란 포인트), 공부 중 카드는 차분하게 */
+    .cert-card.done { border-color: var(--yellow); box-shadow: 0 0 0 1px rgba(250,204,21,0.22), 0 8px 24px rgba(250,204,21,0.12); }
+    .cert-card.done h3 .ico { filter: none; }
+    .cert-card.wip { opacity: 0.95; }
+
+    /* 자격 리스트 (이름 배지 + 한 줄 소개) */
+    .cert-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .cert-list li { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .cert-list .c-name {
+      flex: 0 0 auto;
+      display: inline-flex; align-items: center;
+      font-weight: 700; font-size: 0.9rem;
+      padding: 6px 15px; border-radius: 999px;
+      white-space: nowrap;
+    }
+    .cert-list .c-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.5; flex: 1; min-width: 160px; }
+    /* 완료: 노란 채움 배지 (가장 눈에 띔) */
+    .cert-card.done .c-name {
+      background: var(--yellow); color: #3a2e00;
+      box-shadow: 0 2px 10px rgba(250,204,21,0.25);
+    }
+    /* 공부 중: 보라 테두리 배지 (차분하게) */
+    .cert-card.wip .c-name {
+      background: rgba(124,58,237,0.14);
+      border: 1px solid var(--violet);
+      color: var(--violet-soft);
+    }
+    .cert-card.wip .c-desc { color: #8f87b3; }
+
+    /* ===== Awards timeline ===== */
+    .timeline { position: relative; margin-top: 8px; padding-left: 28px; }
+    .timeline::before {
+      content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px;
+      width: 2px; background: linear-gradient(var(--violet), var(--yellow));
+    }
+    .tl-item { position: relative; padding: 0 0 26px 6px; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-item::before {
+      content: ""; position: absolute; left: -27px; top: 4px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--bg); border: 3px solid var(--yellow);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.25);
+    }
+    .tl-year { font-weight: 800; color: var(--yellow); font-size: 0.95rem; }
+    .tl-title { font-size: 1.05rem; margin: 2px 0 2px; }
+    .tl-org { font-size: 0.84rem; color: var(--muted); margin-bottom: 4px; }
+    .tl-award { font-size: 0.86rem; color: var(--violet-soft); font-weight: 700; }
+
+    /* ===== Career Direction ===== */
+    .goal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .goal-card {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 28px 26px;
+      transition: transform 0.18s, border-color 0.18s;
+    }
+    .goal-card:hover { transform: translateY(-4px); border-color: var(--yellow); }
+    .goal-ico {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; margin-bottom: 16px;
+      font-size: 1.5rem; border-radius: 14px;
+      background: linear-gradient(145deg, rgba(124,58,237,0.3), rgba(250,204,21,0.18));
+      border: 1px solid var(--line);
+    }
+    .goal-card h3 { font-size: 1.15rem; margin-bottom: 8px; display: flex; align-items: baseline; gap: 8px; }
+    .goal-card h3 .goal-en {
+      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em;
+      color: var(--yellow); border: 1px solid var(--yellow);
+      padding: 2px 8px; border-radius: 6px;
+    }
+    .goal-card p { color: var(--muted); font-size: 0.96rem; }
+
+    /* ===== Contact ===== */
+    .contact-card { text-align: center; }
+    .contact-card p { color: var(--muted); margin-bottom: 14px; }
+    .mail {
+      display: inline-block;
+      font-size: 1.15rem; font-weight: 700;
+      background: linear-gradient(90deg, var(--violet-soft), var(--yellow));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-decoration: none;
+    }
+
+    footer { text-align: center; padding: 40px 20px 56px; color: var(--muted); font-size: 0.88rem; }
+    footer .hr { width: 60px; height: 3px; margin: 0 auto 18px; border-radius: 3px; background: linear-gradient(90deg, var(--violet), var(--yellow)); }
+
+    /* ===== Guestbook (기능 유지, 스타일만 테마 반영) ===== */
+    .gb-form { display: flex; flex-direction: column; gap: 12px; }
     .gb-row { display: flex; gap: 10px; flex-wrap: wrap; }
-    .gb-row input { flex: 1; min-width: 140px; }
+    .gb-row input { flex: 1; min-width: 150px; }
     .gb-form input {
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #2a2e42;
-      background: #12141c;
-      color: var(--text);
-      font-size: 1rem;
+      padding: 12px 14px; border-radius: 10px;
+      border: 1px solid var(--line); background: var(--bg-alt);
+      color: var(--text); font-size: 1rem;
     }
-    .gb-form input:focus { outline: 2px solid var(--main); }
+    .gb-form input::placeholder { color: #7d749f; }
+    .gb-form input:focus { outline: 2px solid var(--violet); border-color: transparent; }
     .gb-form button {
       align-self: flex-start;
-      padding: 10px 22px;
-      border: none;
-      border-radius: 8px;
-      background: var(--main);
-      color: #12141c;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
+      padding: 11px 26px; border: none; border-radius: 10px;
+      background: linear-gradient(90deg, var(--violet), var(--violet-deep));
+      color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer;
+      box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
     }
     .gb-form button:disabled { opacity: 0.5; cursor: not-allowed; }
     .gb-status { min-height: 1.3em; font-size: 0.92rem; }
-    .gb-status.error { color: #ff8a8a; }
-    .gb-status.ok { color: #7ee0a0; }
-    .gb-status.loading { color: #b8bdd0; }
-    .gb-list { list-style: none; margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
-    .gb-item { background: var(--card); border-radius: 12px; padding: 14px 16px; }
+    .gb-status.error { color: #ff9b9b; }
+    .gb-status.ok { color: var(--yellow); }
+    .gb-status.loading { color: var(--muted); }
+    .gb-list { list-style: none; margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
+    .gb-item { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--violet); border-radius: 12px; padding: 14px 16px; }
     .gb-item .gb-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
-    .gb-item .gb-nick { font-weight: 700; color: var(--main); }
-    .gb-item .gb-time { font-size: 0.82rem; color: #8a90a6; }
-    .gb-item .gb-msg { color: #d6d9e6; word-break: break-word; }
-    .gb-empty { color: #8a90a6; }</style>
+    .gb-item .gb-nick { font-weight: 700; color: var(--violet-soft); }
+    .gb-item .gb-time { font-size: 0.82rem; color: #8a82ab; }
+    .gb-item .gb-msg { color: var(--text); word-break: break-word; }
+    .gb-empty { color: var(--muted); }
+    /* 방명록 개수 / 더 보기 */
+    .gb-count { font-size: 0.86rem; color: var(--muted); margin-top: 16px; }
+    .gb-count strong { color: var(--yellow); }
+    .gb-more {
+      display: none; margin: 16px auto 0;
+      padding: 9px 22px; border-radius: 10px;
+      background: transparent; border: 1px solid var(--violet);
+      color: var(--violet-soft); font-weight: 700; font-size: 0.92rem; cursor: pointer;
+    }
+    .gb-more:hover { background: rgba(124,58,237,0.14); }
+    .gb-item.gb-hidden { display: none; }
+
+    /* ===== 맨 위로 가기 버튼 ===== */
+    .to-top {
+      position: fixed;
+      right: 22px; bottom: 22px;
+      width: 46px; height: 46px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; border-radius: 50%;
+      background: linear-gradient(145deg, var(--violet), var(--violet-deep));
+      color: #fff; font-size: 1.3rem; cursor: pointer;
+      box-shadow: 0 8px 22px rgba(124,58,237,0.4);
+      opacity: 0; visibility: hidden; transform: translateY(12px);
+      transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+      z-index: 55;
+    }
+    .to-top.show { opacity: 1; visibility: visible; transform: none; }
+    .to-top:hover { transform: translateY(-2px); }
+
+    /* ===== 이메일 복사 버튼 ===== */
+    .copy-mail {
+      margin-left: 10px;
+      padding: 4px 12px; border-radius: 8px;
+      background: transparent; border: 1px solid var(--yellow);
+      color: var(--yellow); font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      vertical-align: middle;
+    }
+    .copy-mail:hover { background: rgba(250,204,21,0.12); }
+
+    /* ===== 토스트 알림 ===== */
+    .toast {
+      position: fixed;
+      left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px);
+      background: var(--card-hi); color: var(--text);
+      border: 1px solid var(--yellow);
+      padding: 11px 22px; border-radius: 12px; font-size: 0.92rem; font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      opacity: 0; visibility: hidden; transition: opacity 0.25s, transform 0.25s, visibility 0.25s;
+      z-index: 70;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 720px) {
+      section { padding: 64px 18px; }
+      .about-grid, .proj-grid, .skills-wrap, .goal-grid { grid-template-columns: 1fr; }
+      nav .brand { width: 100%; margin-bottom: 4px; }
+    }
+  </style>
 </head>
 
 <body>
 
+  <div class="scroll-progress" id="scrollProgress"></div>
+
   <nav>
-    <a href="#about">소개</a>
-    <a href="#projects">내가 한 일</a>
-    <a href="#skills">할 줄 아는 것</a>
-    <a href="#contact">연락처</a>
-    <a href="#guestbook">방명록</a>
+    <span class="brand">EUNJI · KIM</span>
+    <a class="link" href="#about">About</a>
+    <a class="link" href="#projects">Projects</a>
+    <a class="link" href="#skills">Skills</a>
+    <a class="link" href="#awards">Awards</a>
+    <a class="link" href="#goals">Goals</a>
+    <a class="link" href="#contact">Contact</a>
+    <a class="link" href="#guestbook">Guestbook</a>
   </nav>
 
-  <section class="hero">
-    <h1>안녕하세요, 은지입니다 👋</h1>
-    <p>경영과 IT에 관심 있는 대학생이에요.</p>
-  </section>
+  <!-- ===== Hero ===== -->
+  <header class="hero">
+    <span class="badge"><span class="dot"></span> 경영정보학과 재학 · 디자인과 데이터를 함께</span>
+    <h1>
+      <span class="g2">경영</span>과 <span class="g1">IT</span>,<br>
+      그리고 디자인을 잇습니다.
+    </h1>
+    <p class="lead">
+      <span class="greeting">안녕하세요, 은지입니다 👋</span>
+      경영 지식에 데이터 분석과 미디어/디자인 역량을 더해,<br>
+      다양한 분야를 연결하고 새로운 가치를 창출하는 융합형 인재로 성장하고자 합니다.
+    </p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#projects">Projects</a>
+      <a class="btn btn-ghost" href="#contact">Contact</a>
+    </div>
+  </header>
 
+  <!-- ===== About ===== -->
   <section id="about">
-    <h2>소개</h2>
-    <div class="card">
-      <p><strong>국민대학교 경영정보학과</strong> 재학 중입니다.
-         경영 지식에 데이터 분석과 정보기술 역량을 더해, 기술을 비즈니스 문제 해결에 연결하는 사람이 되는 것이 목표입니다.</p>
+    <span class="eyebrow reveal">About</span>
+    <h2 class="reveal">소개</h2>
+    <p class="section-sub reveal d1">경영을 전공하며, 데이터와 디자인으로 메시지를 전하는 법을 함께 익혀왔습니다.</p>
+
+    <div class="about-grid">
+      <div class="card lead-card reveal d2">
+        <p><strong>국민대학교 경영정보학과</strong>에 재학 중입니다.
+           경영 지식 위에 데이터 분석과 정보기술 역량을 쌓으며,
+           기술을 비즈니스 문제 해결에 연결하는 사람이 되는 것을 목표로 합니다.</p>
+        <p>학업과 병행해 서포터즈 클럽 디자인팀장, 공모전 출품 등
+           직접 기획하고 만드는 활동을 이어왔습니다.
+           숫자로 읽는 분석력과 눈으로 전하는 디자인 감각을
+           함께 갖춘 사람이 되고자 합니다.</p>
+      </div>
+
+      <div class="card profile reveal d3">
+        <div class="p-title">Profile <span>·</span></div>
+        <dl>
+          <dt>Name</dt><dd>김은지</dd>
+          <dt>University</dt><dd>국민대학교</dd>
+          <dt>Major</dt><dd>경영정보학과</dd>
+          <dt>Focus</dt><dd>데이터 분석 · 디자인 · 비즈니스</dd>
+          <dt>Email</dt><dd><a href="mailto:baba100433@kookmin.ac.kr" style="color:var(--violet-soft)">baba100433@kookmin.ac.kr</a></dd>
+        </dl>
+      </div>
     </div>
   </section>
 
+  <!-- ===== Projects ===== -->
   <section id="projects">
-    <h2>내가 한 일</h2>
+    <span class="eyebrow reveal">Projects</span>
+    <h2 class="reveal">내가 한 일</h2>
+    <p class="section-sub reveal d1">기획부터 실행까지 직접 맡아 이끈 대표 활동입니다.</p>
 
-    <div class="card">
-      <h3>경영정보학원론 수업 팀 프로젝트 (팀장)</h3>
-      <p>실제 기업이 신기술을 도입하는 과정에서 맞닥뜨렸던 실패 / 정체 / 위기의 갈림길을 되짚어보고, 만약 우리 팀이 그 순간의 의사결정자였다면 어떤 선택을 했을까를 설계함.</p>
-    </div>
+    <div class="proj-grid">
+      <div class="proj reveal d2">
+        <span class="role">디자인팀장</span>
+        <div class="period">2024.08 — 2025.05</div>
+        <h3>24/25시즌 울버햄튼 코리아 공식 서포터즈 클럽</h3>
+        <p>경기 일정과 구단 소식을 <strong>매주 카드뉴스 1회</strong>로 제작해 꾸준히 발행했습니다. 디자인팀을 이끌며 콘텐츠의 톤과 발행 일정을 관리했고, 1,000명<span class="arrow" aria-label="이상">↑</span> 규모의 팔로워에게 소식을 전했습니다.</p>
+        <div class="proj-meta">
+          <span class="meta-chip">Photoshop</span>
+          <span class="meta-chip">Illustrator</span>
+          <span class="meta-chip">팔로워 1,000<span class="arrow" aria-label="이상">↑</span></span>
+          <span class="meta-chip">주 1회 발행</span>
+        </div>
+      </div>
 
-    <div class="card">
-      <h3> 24/25 울버햄튼 코리아 운영진 (디자인팀장)</h3>
-      <p>경기 일정을 SNS에 공지하고, 구단의 주요 소식을 카드뉴스로 만들어 매주 업로드.</p>
-    </div>
-
-    <div class="card">
-      <h3>제 30회 커뮤니케이션디자인 국제공모전 특선</h3>
-      <p>포스터를 제작하여 출품하였고, 특선을 수상.</p>
+      <div class="proj reveal d3">
+        <span class="role">팀장</span>
+        <div class="period">2026.09 — 진행 중</div>
+        <h3>경영정보학원론 New IT 프로젝트</h3>
+        <p><strong>폭스바겐</strong>이 신기술을 도입하며 맞닥뜨린 실패·정체·위기의 갈림길을 되짚고, 우리 팀이 그 순간의 의사결정자였다면 어떤 선택을 했을지를 설계하고 있습니다. 4명으로 팀을 꾸려 역할을 나누고 분석을 이끌고 있습니다.</p>
+        <div class="proj-meta">
+          <span class="meta-chip">4인 팀</span>
+          <span class="meta-chip">폭스바겐 사례</span>
+          <span class="meta-chip meta-live">진행 중</span>
+        </div>
+      </div>
     </div>
   </section>
 
+  <!-- ===== Skills ===== -->
   <section id="skills">
-    <h2>할 줄 아는 것</h2>
-    <div class="tags">
-      <span>ADSP</span>
-      <span>SQLD</span>
-      <span>GTQ 1급</span>
-      <span>TOEIC 890</span>
+    <span class="eyebrow reveal">Skills &amp; Certifications</span>
+    <h2 class="reveal">자격 &amp; 어학</h2>
+    <p class="section-sub reveal d1">데이터 · 디자인 · 어학 역량을 자격으로 증명해왔고, 지금도 더 넓혀가는 중입니다.</p>
+
+    <div class="skills-wrap">
+      <div class="card chip-card cert-card done reveal d2">
+        <h3><span class="ico">✅</span> 취득 완료
+          <span class="count">4</span>
+        </h3>
+        <ul class="cert-list">
+          <li><span class="c-name">ADSP</span><span class="c-desc">데이터 분석 기획과 방법론을 다루는 데이터분석 준전문가 자격</span></li>
+          <li><span class="c-name">SQLD</span><span class="c-desc">SQL과 데이터 모델링 활용 능력을 검증하는 개발자 자격</span></li>
+          <li><span class="c-name">GTQ 1급</span><span class="c-desc">포토샵 등 그래픽 편집 실무 능력을 인증하는 자격</span></li>
+          <li><span class="c-name">TOEIC 890</span><span class="c-desc">영어 독해·청취 역량을 보여주는 공인 영어 성적</span></li>
+        </ul>
+      </div>
+      <div class="card chip-card cert-card wip reveal d3">
+        <h3><span class="ico">📚</span> 공부 중
+          <span class="count count-wip">3</span>
+        </h3>
+        <ul class="cert-list">
+          <li><span class="c-name">OPIc</span><span class="c-desc">영어로 말하는 능력을 평가하는 말하기 시험</span></li>
+          <li><span class="c-name">한국사능력검정시험</span><span class="c-desc">한국사 이해도를 평가하는 국가 공인 시험</span></li>
+          <li><span class="c-name">컴활 2급</span><span class="c-desc">스프레드시트·데이터베이스 활용을 다루는 컴퓨터활용능력 자격</span></li>
+        </ul>
+      </div>
     </div>
   </section>
 
+  <!-- ===== Awards ===== -->
+  <section id="awards">
+    <span class="eyebrow reveal">Awards</span>
+    <h2 class="reveal">수상</h2>
+    <p class="section-sub reveal d1">디자인과 영상 공모전에서 받은 수상 이력입니다.</p>
+
+    <div class="timeline">
+      <div class="tl-item reveal d2">
+        <div class="tl-year">2024</div>
+        <div class="tl-title">제30회 커뮤니케이션디자인 국제공모전</div>
+        <div class="tl-org">한국커뮤니케이션디자인협회</div>
+        <div class="tl-award">특선</div>
+      </div>
+      <div class="tl-item reveal d2">
+        <div class="tl-year">2023</div>
+        <div class="tl-title">한강하구 생태환경 영상공모전</div>
+        <div class="tl-org">인하대학교 산학협력단</div>
+        <div class="tl-award">장려상</div>
+      </div>
+      <div class="tl-item reveal d3">
+        <div class="tl-year">2022</div>
+        <div class="tl-title">전기사랑 미디어콘텐츠대전</div>
+        <div class="tl-org">한국전기신문사</div>
+        <div class="tl-award">특선</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Career Direction ===== -->
+  <section id="goals">
+    <span class="eyebrow reveal">Career Direction</span>
+    <h2 class="reveal">지향하는 길</h2>
+    <p class="section-sub reveal d1">경영·데이터·디자인을 잇는 경험을 이 방향으로 모아가고 있습니다.</p>
+
+    <div class="goal-grid">
+      <div class="goal-card reveal d2">
+        <span class="goal-ico">🧭</span>
+        <h3>프로덕트 매니저 <span class="goal-en">PM</span></h3>
+        <p>사용자의 진짜 불편을 정의하고, 경영·데이터·디자인을 엮어 더 나은 제품의 방향을 설계하는 사람이 되고자 합니다.</p>
+      </div>
+      <div class="goal-card reveal d3">
+        <span class="goal-ico">💌</span>
+        <h3>CRM 마케터 <span class="goal-en">CRM</span></h3>
+        <p>고객 데이터를 읽어 적절한 메시지를 적절한 순간에 전하고, 관계를 키워 비즈니스 가치로 연결하고자 합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Contact ===== -->
   <section id="contact">
-    <h2>연락처</h2>
-    <div class="card">
-      <p>이메일: <a href="mailto:baba100433@kookmin.ac.kr">baba100433@kookmin.ac.kr</a></p>
+    <span class="eyebrow reveal">Contact</span>
+    <h2 class="reveal">연락처</h2>
+    <p class="section-sub reveal d1">궁금한 점이나 제안이 있다면 편하게 연락해 주세요.</p>
+    <div class="card contact-card reveal d2">
+      <p>이메일로 연락 주시면 빠르게 답변드리겠습니다.</p>
+      <a class="mail" href="mailto:baba100433@kookmin.ac.kr">baba100433@kookmin.ac.kr</a>
+      <button type="button" class="copy-mail" id="copyMail" data-email="baba100433@kookmin.ac.kr" aria-label="이메일 주소 복사">복사</button>
     </div>
   </section>
 
+  <!-- ===== Guestbook (기능 그대로 유지) ===== -->
   <section id="guestbook">
-    <h2>방명록</h2>
+    <span class="eyebrow reveal">Guestbook</span>
+    <h2 class="reveal">방명록</h2>
+    <p class="section-sub reveal d1">포트폴리오를 보고 한 줄 응원 메시지를 남겨주세요. (별명 2~12자, 메시지 1~100자)</p>
+
     <div class="card">
-      <p style="margin-bottom:16px;">포트폴리오를 보고 한 줄 응원 메시지를 남겨주세요. (별명 2~12자, 메시지 1~100자)</p>
       <form class="gb-form" id="gbForm" autocomplete="off">
         <div class="gb-row">
           <input type="text" id="gbNick" placeholder="별명 (2~12자)" maxlength="12" aria-label="별명">
@@ -200,11 +681,123 @@
       </form>
     </div>
     <ul class="gb-list" id="gbList" aria-label="최근 방명록 목록"></ul>
+    <button type="button" class="gb-more" id="gbMore">더 보기</button>
+    <p class="gb-count" id="gbCount"></p>
   </section>
 
   <footer>
-    © 2026 은지. All rights reserved.
+    <div class="hr"></div>
+    © 2026 김은지. All rights reserved.
   </footer>
+
+  <button type="button" class="to-top" id="toTop" aria-label="맨 위로 가기">↑</button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- 스크롤 등장 효과 (방명록 기능과 독립) -->
+  <script>
+    (function () {
+      const items = document.querySelectorAll(".reveal");
+      if (!items.length) return;
+
+      // IntersectionObserver 미지원 브라우저는 바로 보이게 (폴백)
+      if (!("IntersectionObserver" in window)) {
+        items.forEach((el) => el.classList.add("is-visible"));
+        return;
+      }
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target); // 한 번 나타나면 유지
+          }
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+
+      items.forEach((el) => io.observe(el));
+    })();
+  </script>
+
+  <!-- UI 편의 기능: 진행바 · 섹션 하이라이트 · 맨위로 · 이메일 복사 (방명록과 독립) -->
+  <script>
+    (function () {
+      const progress = document.getElementById("scrollProgress");
+      const toTop = document.getElementById("toTop");
+      const toast = document.getElementById("toast");
+      const navLinks = Array.from(document.querySelectorAll('nav a.link'));
+      const sections = navLinks
+        .map((a) => document.querySelector(a.getAttribute("href")))
+        .filter(Boolean);
+
+      let toastTimer = null;
+      function showToast(text) {
+        if (!toast) return;
+        toast.textContent = text;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
+      }
+
+      function onScroll() {
+        const doc = document.documentElement;
+        const scrollTop = doc.scrollTop || document.body.scrollTop;
+        const height = doc.scrollHeight - doc.clientHeight;
+        const pct = height > 0 ? (scrollTop / height) * 100 : 0;
+        if (progress) progress.style.width = pct + "%";
+
+        if (toTop) toTop.classList.toggle("show", scrollTop > 400);
+
+        // 현재 보고 있는 섹션 네비 하이라이트
+        const mid = scrollTop + window.innerHeight * 0.35;
+        let currentId = null;
+        for (const sec of sections) {
+          if (sec.offsetTop <= mid) currentId = sec.id;
+        }
+        navLinks.forEach((a) => {
+          a.classList.toggle("active", a.getAttribute("href") === "#" + currentId);
+        });
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      onScroll();
+
+      if (toTop) {
+        toTop.addEventListener("click", () => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }
+
+      // 이메일 복사
+      const copyBtn = document.getElementById("copyMail");
+      if (copyBtn) {
+        copyBtn.addEventListener("click", async () => {
+          const email = copyBtn.getAttribute("data-email") || "";
+          try {
+            if (navigator.clipboard && window.isSecureContext) {
+              await navigator.clipboard.writeText(email);
+            } else {
+              // 폴백: 임시 입력창으로 복사
+              const ta = document.createElement("textarea");
+              ta.value = email;
+              ta.style.position = "fixed";
+              ta.style.opacity = "0";
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand("copy");
+              document.body.removeChild(ta);
+            }
+            showToast("이메일 주소를 복사했어요 📋");
+          } catch (e) {
+            showToast("복사에 실패했어요. 직접 선택해 주세요.");
+          }
+        });
+      }
+
+      // 다른 스크립트(방명록)에서 토스트를 쓸 수 있게 노출
+      window.__showToast = showToast;
+    })();
+  </script>
 
   <script>
     (function () {
@@ -217,6 +810,9 @@
       const submitEl = document.getElementById("gbSubmit");
       const statusEl = document.getElementById("gbStatus");
       const listEl = document.getElementById("gbList");
+      const moreEl = document.getElementById("gbMore");
+      const countEl = document.getElementById("gbCount");
+      const PREVIEW = 5; // 처음에 보여줄 개수
 
       function setStatus(text, kind) {
         statusEl.textContent = text;
@@ -257,6 +853,48 @@
         return li;
       }
 
+      // 개수 표시 + 더 보기 상태 갱신
+      function updateCountAndMore() {
+        const items = listEl.querySelectorAll(".gb-item");
+        const total = items.length;
+
+        if (countEl) {
+          countEl.innerHTML = total > 0
+            ? `표시된 메시지 <strong>${total}</strong>개`
+            : "";
+        }
+
+        if (!moreEl) return;
+        if (total > PREVIEW) {
+          // PREVIEW 이후 항목 숨김
+          items.forEach((li, i) => li.classList.toggle("gb-hidden", i >= PREVIEW));
+          const hiddenCount = total - PREVIEW;
+          moreEl.textContent = `더 보기 (${hiddenCount})`;
+          moreEl.style.display = "block";
+          moreEl.dataset.expanded = "false";
+        } else {
+          items.forEach((li) => li.classList.remove("gb-hidden"));
+          moreEl.style.display = "none";
+        }
+      }
+
+      if (moreEl) {
+        moreEl.addEventListener("click", () => {
+          const expanded = moreEl.dataset.expanded === "true";
+          const items = listEl.querySelectorAll(".gb-item");
+          if (expanded) {
+            items.forEach((li, i) => li.classList.toggle("gb-hidden", i >= PREVIEW));
+            moreEl.dataset.expanded = "false";
+            moreEl.textContent = `더 보기 (${items.length - PREVIEW})`;
+            document.getElementById("guestbook").scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            items.forEach((li) => li.classList.remove("gb-hidden"));
+            moreEl.dataset.expanded = "true";
+            moreEl.textContent = "접기";
+          }
+        });
+      }
+
       function renderList(items) {
         listEl.innerHTML = "";
         if (!items || items.length === 0) {
@@ -264,9 +902,11 @@
           li.className = "gb-empty";
           li.textContent = "아직 글이 없어요. 첫 메시지를 남겨보세요.";
           listEl.appendChild(li);
+          updateCountAndMore();
           return;
         }
         items.forEach((row) => listEl.appendChild(makeItem(row)));
+        updateCountAndMore();
       }
 
       async function loadList() {
@@ -314,6 +954,7 @@
 
           // 서버가 저장을 확인한 뒤에만 성공 처리
           setStatus("등록됐어요.", "ok");
+          if (window.__showToast) window.__showToast("메시지를 남겼어요 🎉");
           nickEl.value = "";
           msgEl.value = "";
           if (data.item) {
@@ -321,6 +962,7 @@
             const empty = listEl.querySelector(".gb-empty");
             if (empty) listEl.innerHTML = "";
             listEl.insertBefore(makeItem(data.item), listEl.firstChild);
+            updateCountAndMore();
           } else {
             loadList();
           }
