@@ -233,6 +233,8 @@
     .profile dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; }
     .profile dt { color: var(--yellow); font-weight: 700; font-size: 0.86rem; white-space: nowrap; }
     .profile dd { color: var(--text); font-size: 0.95rem; }
+    /* 이메일 + 복사 버튼을 한 줄에 나란히 (버튼을 오른쪽에) */
+    .profile dd.dd-mail { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .profile .p-title { font-weight: 800; margin-bottom: 16px; font-size: 1.1rem; }
     .profile .p-title span { color: var(--violet-soft); }
 
@@ -535,7 +537,7 @@
           <dt>University</dt><dd>국민대학교</dd>
           <dt>Major</dt><dd>경영정보학과</dd>
           <dt>Focus</dt><dd>데이터 분석 · 디자인 · 비즈니스</dd>
-          <dt>Email</dt><dd><a href="mailto:baba100433@kookmin.ac.kr" style="color:var(--violet-soft)">baba100433@kookmin.ac.kr</a><button type="button" class="copy-mail" data-email="baba100433@kookmin.ac.kr" aria-label="이메일 주소 복사">복사</button></dd>
+          <dt>Email</dt><dd class="dd-mail"><a href="mailto:baba100433@kookmin.ac.kr" style="color:var(--violet-soft)">baba100433@kookmin.ac.kr</a><button type="button" class="copy-mail" data-email="baba100433@kookmin.ac.kr" aria-label="이메일 주소 복사">복사</button></dd>
         </dl>
       </div>
     </div>
