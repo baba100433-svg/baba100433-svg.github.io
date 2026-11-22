@@ -430,7 +430,8 @@
     /* ===== 맨 위로 가기 버튼 ===== */
     .to-top {
       position: fixed;
-      right: 22px; bottom: 22px;
+      /* 우측 하단 Netlify 배지와 겹치지 않도록 위로 올림 */
+      right: 22px; bottom: 84px;
       width: 46px; height: 46px;
       display: flex; align-items: center; justify-content: center;
       border: none; border-radius: 50%;
@@ -534,7 +535,7 @@
           <dt>University</dt><dd>국민대학교</dd>
           <dt>Major</dt><dd>경영정보학과</dd>
           <dt>Focus</dt><dd>데이터 분석 · 디자인 · 비즈니스</dd>
-          <dt>Email</dt><dd><a href="mailto:baba100433@kookmin.ac.kr" style="color:var(--violet-soft)">baba100433@kookmin.ac.kr</a></dd>
+          <dt>Email</dt><dd><a href="mailto:baba100433@kookmin.ac.kr" style="color:var(--violet-soft)">baba100433@kookmin.ac.kr</a><button type="button" class="copy-mail" data-email="baba100433@kookmin.ac.kr" aria-label="이메일 주소 복사">복사</button></dd>
         </dl>
       </div>
     </div>
@@ -769,9 +770,9 @@
         });
       }
 
-      // 이메일 복사
-      const copyBtn = document.getElementById("copyMail");
-      if (copyBtn) {
+      // 이메일 복사 (소개 Profile + 연락처 등 .copy-mail 버튼 모두 처리)
+      const copyBtns = document.querySelectorAll(".copy-mail");
+      copyBtns.forEach((copyBtn) => {
         copyBtn.addEventListener("click", async () => {
           const email = copyBtn.getAttribute("data-email") || "";
           try {
@@ -793,7 +794,7 @@
             showToast("복사에 실패했어요. 직접 선택해 주세요.");
           }
         });
-      }
+      });
 
       // 다른 스크립트(방명록)에서 토스트를 쓸 수 있게 노출
       window.__showToast = showToast;
